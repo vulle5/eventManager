@@ -7,4 +7,21 @@ eventRoutes.get('', (req, res) => {
   });
 });
 
+eventRoutes.post('', async (req, res) => {
+  const body = req.body;
+
+  try {
+    const event = new Event({
+      name: body.name,
+      startDate: body.startDate,
+      endDate: body.endDate,
+      description: body.description || ''
+    });
+    const savedEvent = await event.save();
+    res.status(201).json(savedEvent.toJSON());
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 module.exports = eventRoutes;

@@ -38,4 +38,12 @@ locationRoutes.post('', async (req, res, next) => {
   }
 });
 
+locationRoutes.delete('/:id', (req, res, next) => {
+  Location.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end();
+    })
+    .catch(error => next(error));
+});
+
 module.exports = locationRoutes;

@@ -38,4 +38,12 @@ eventRoutes.post('', async (req, res, next) => {
   }
 });
 
+eventRoutes.delete('/:id', (req, res, next) => {
+  Event.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end();
+    })
+    .catch(error => next(error));
+});
+
 module.exports = eventRoutes;

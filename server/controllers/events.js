@@ -46,4 +46,26 @@ eventRoutes.delete('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
+eventRoutes.put('/:id', async (req, res, next) => {
+  const body = req.body;
+
+  try {
+    const oldEvent = await Event.findById(req.params.id);
+
+    const newEvent = {
+      name: body.name || oldEvent.name,
+      startDate: body.startDate || oldEvent.startDate,
+      endDate: body.endDate || oldEvent.endDate,
+      description: body.description || oldEvent.description
+    };
+
+    const event = await Event.findByIdAndUpdate(req.params.id, newEvent, {
+      new: true
+    });
+    res.json(event.toJSON());
+  } catch (error) {
+    return next(error);
+  }
+});
+
 module.exports = eventRoutes;

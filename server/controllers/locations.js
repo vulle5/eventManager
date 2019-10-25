@@ -46,4 +46,30 @@ locationRoutes.delete('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
+locationRoutes.put('/:id', async (req, res, next) => {
+  const body = req.body;
+
+  try {
+    const oldLocation = await Location.findById(req.params.id);
+
+    const newLocation = {
+      name: body.name || oldLocation.name,
+      address: body.address || oldLocation.address,
+      phoneNum: body.phoneNum || oldLocation.phoneNum,
+      webUrl: body.webUrl || oldLocation.webUrl
+    };
+
+    const location = await Location.findByIdAndUpdate(
+      req.params.id,
+      newLocation,
+      {
+        new: true
+      }
+    );
+    res.json(location.toJSON());
+  } catch (error) {
+    return next(error);
+  }
+});
+
 module.exports = locationRoutes;

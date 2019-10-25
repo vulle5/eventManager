@@ -7,7 +7,21 @@ eventRoutes.get('', (req, res) => {
   });
 });
 
-eventRoutes.post('', async (req, res) => {
+eventRoutes.get('/:id', async (req, res, next) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (event) {
+      res.json(event.toJSON());
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    return next(error);
+  }
+});
+
+eventRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   try {
@@ -20,7 +34,7 @@ eventRoutes.post('', async (req, res) => {
     const savedEvent = await event.save();
     res.status(201).json(savedEvent.toJSON());
   } catch (error) {
-    res.status(400).json(error);
+    return next(error);
   }
 });
 

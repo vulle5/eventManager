@@ -5,10 +5,10 @@ const { Schema } = mongoose;
 // Participants are also going to be connected
 
 const eventSchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, maxlength: 50 },
   startDate: { type: Date, required: true },
-  endDate: Date,
-  description: String
+  endDate: { type: Date, required: true },
+  description: { type: String, maxlength: 1000 }
 });
 
 eventSchema.set('toJSON', {

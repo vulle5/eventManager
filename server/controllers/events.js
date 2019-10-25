@@ -1,13 +1,13 @@
-const eventRoutes = require('express').Router();
+const eventsRoutes = require('express').Router();
 const Event = require('../models/Event');
 
-eventRoutes.get('', (req, res) => {
+eventsRoutes.get('', (req, res) => {
   Event.find({}).then(events => {
     res.json(events.map(event => event.toJSON()));
   });
 });
 
-eventRoutes.get('/:id', async (req, res, next) => {
+eventsRoutes.get('/:id', async (req, res, next) => {
   try {
     const event = await Event.findById(req.params.id);
 
@@ -21,7 +21,7 @@ eventRoutes.get('/:id', async (req, res, next) => {
   }
 });
 
-eventRoutes.post('', async (req, res, next) => {
+eventsRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   try {
@@ -38,7 +38,7 @@ eventRoutes.post('', async (req, res, next) => {
   }
 });
 
-eventRoutes.delete('/:id', (req, res, next) => {
+eventsRoutes.delete('/:id', (req, res, next) => {
   Event.findByIdAndRemove(req.params.id)
     .then(result => {
       res.status(204).end();
@@ -46,7 +46,7 @@ eventRoutes.delete('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
-eventRoutes.put('/:id', async (req, res, next) => {
+eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
   try {
@@ -68,4 +68,4 @@ eventRoutes.put('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = eventRoutes;
+module.exports = eventsRoutes;

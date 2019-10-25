@@ -1,14 +1,19 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Location is going to be connected to Event
-// Participants are also going to be connected
+// TODO: User is going to be connected to Event
+// TODO: Location is going to be connected to Event
+// TODO: Participants are also going to be connected
 
 const eventSchema = new Schema({
   name: { type: String, required: true, maxlength: 50 },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  description: { type: String, maxlength: 1000 }
+  description: { type: String, maxlength: 1000 },
+  organizer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 });
 
 eventSchema.set('toJSON', {

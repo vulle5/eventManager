@@ -1,13 +1,13 @@
-const locationRoutes = require('express').Router();
+const locationsRoutes = require('express').Router();
 const Location = require('../models/Location');
 
-locationRoutes.get('', (req, res) => {
+locationsRoutes.get('', (req, res) => {
   Location.find({}).then(locations => {
     res.json(locations.map(location => location.toJSON()));
   });
 });
 
-locationRoutes.get('/:id', async (req, res, next) => {
+locationsRoutes.get('/:id', async (req, res, next) => {
   try {
     const location = await Location.findById(req.params.id);
 
@@ -21,7 +21,7 @@ locationRoutes.get('/:id', async (req, res, next) => {
   }
 });
 
-locationRoutes.post('', async (req, res, next) => {
+locationsRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   try {
@@ -38,7 +38,7 @@ locationRoutes.post('', async (req, res, next) => {
   }
 });
 
-locationRoutes.delete('/:id', (req, res, next) => {
+locationsRoutes.delete('/:id', (req, res, next) => {
   Location.findByIdAndRemove(req.params.id)
     .then(result => {
       res.status(204).end();
@@ -46,7 +46,7 @@ locationRoutes.delete('/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
-locationRoutes.put('/:id', async (req, res, next) => {
+locationsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
   try {
@@ -72,4 +72,4 @@ locationRoutes.put('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = locationRoutes;
+module.exports = locationsRoutes;

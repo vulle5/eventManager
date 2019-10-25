@@ -1,15 +1,19 @@
 const bcrypt = require('bcrypt');
 const usersRoutes = require('express').Router();
-const User = require('../models/user');
+const User = require('../models/User');
 
-usersRoutes.get('/', async (request, response) => {
-  const users = await User.find({});
-  response.json(users.map(u => u.toJSON()));
+usersRoutes.get('/', async (req, res) => {
+  const users = await User.find({}).populate('events', {
+    name: 1,
+    startDate: 1,
+    endDate: 1
+  });
+  res.json(users.map(u => u.toJSON()));
 });
 
-usersRoutes.post('/', async (request, response, next) => {
+usersRoutes.post('/', async (req, res, next) => {
   try {
-    const body = request.body;
+    const body = req.body;
 
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(body.password, saltRounds);
@@ -22,7 +26,7 @@ usersRoutes.post('/', async (request, response, next) => {
 
     const savedUser = await user.save();
 
-    response.json(savedUser);
+    res.json(savedUser);
   } catch (exception) {
     return next(exception);
   }

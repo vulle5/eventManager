@@ -1,10 +1,9 @@
 const locationsRoutes = require('express').Router();
 const Location = require('../models/Location');
 
-locationsRoutes.get('', (req, res) => {
-  Location.find({}).then(locations => {
-    res.json(locations.map(location => location.toJSON()));
-  });
+locationsRoutes.get('', async (req, res) => {
+  const locations = await Location.find({});
+  res.json(locations.map(location => location.toJSON()));
 });
 
 locationsRoutes.get('/:id', async (req, res, next) => {
@@ -38,12 +37,13 @@ locationsRoutes.post('', async (req, res, next) => {
   }
 });
 
-locationsRoutes.delete('/:id', (req, res, next) => {
-  Location.findByIdAndRemove(req.params.id)
-    .then(result => {
-      res.status(204).end();
-    })
-    .catch(error => next(error));
+locationsRoutes.delete('/:id', async (req, res, next) => {
+  try {
+    await Location.findByIdAndRemove(req.params.id);
+    res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
 });
 
 locationsRoutes.put('/:id', async (req, res, next) => {

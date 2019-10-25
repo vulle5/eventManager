@@ -1,10 +1,13 @@
 const eventsRoutes = require('express').Router();
 const Event = require('../models/Event');
+const User = require('../models/User');
 
-eventsRoutes.get('', (req, res) => {
-  Event.find({}).then(events => {
-    res.json(events.map(event => event.toJSON()));
+eventsRoutes.get('', async (req, res) => {
+  const events = await Event.find({}).populate('organizer', {
+    name: 1,
+    username: 1
   });
+  res.json(events.map(event => event.toJSON()));
 });
 
 eventsRoutes.get('/:id', async (req, res, next) => {
@@ -25,25 +28,31 @@ eventsRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   try {
+    const user = await User.findById(body.userId);
+
     const event = new Event({
       name: body.name,
       startDate: body.startDate,
       endDate: body.endDate,
-      description: body.description || ''
+      description: body.description || '',
+      organizer: user._id
     });
     const savedEvent = await event.save();
+    user.events = user.events.concat(savedEvent._id);
+    await user.save();
     res.status(201).json(savedEvent.toJSON());
   } catch (error) {
     return next(error);
   }
 });
 
-eventsRoutes.delete('/:id', (req, res, next) => {
-  Event.findByIdAndRemove(req.params.id)
-    .then(result => {
-      res.status(204).end();
-    })
-    .catch(error => next(error));
+eventsRoutes.delete('/:id', async (req, res, next) => {
+  try {
+    await Event.findByIdAndRemove(req.params.id);
+    res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
 });
 
 eventsRoutes.put('/:id', async (req, res, next) => {

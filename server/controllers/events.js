@@ -3,10 +3,6 @@ const Event = require('../models/Event');
 const User = require('../models/User');
 const Location = require('../models/Location');
 
-// TODO: Check that put works in event and participation
-// Participation update is used for updating status
-// Event update is used for updating event
-
 eventsRoutes.get('', async (req, res) => {
   const events = await Event.find({})
     .populate('organizer', {
@@ -65,6 +61,7 @@ eventsRoutes.post('', async (req, res, next) => {
 });
 
 eventsRoutes.delete('/:id', async (req, res, next) => {
+  // TODO: Make sure that only the user can delete an event
   try {
     await Event.findByIdAndRemove(req.params.id);
     res.status(204).end();
@@ -73,7 +70,6 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
-// TODO: Make sure that only the user can register to an event
 eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
   // TODO: Make sure that only organizer can update the event
@@ -86,7 +82,8 @@ eventsRoutes.put('/:id', async (req, res, next) => {
       endDate: body.endDate || oldEvent.endDate,
       description: body.description || oldEvent.description,
       organizer: body.userId || oldEvent.organizer,
-      location: body.locationId || oldEvent.location
+      location: body.locationId || oldEvent.location,
+      participants: oldEvent.participants
     };
 
     const savedEvent = await Event.findByIdAndUpdate(req.params.id, newEvent, {

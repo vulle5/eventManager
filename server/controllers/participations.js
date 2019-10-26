@@ -30,7 +30,7 @@ participationsRoutes.get('/:id', async (req, res, next) => {
 participationsRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
-  // TODO: Make sure that only the user can creat an participation
+  // TODO: Make sure that only the user can creat a participation
   try {
     const user = await User.findById(body.userId);
     const event = await Event.findById(body.eventId);
@@ -53,6 +53,7 @@ participationsRoutes.post('', async (req, res, next) => {
 });
 
 participationsRoutes.delete('/:id', async (req, res, next) => {
+  // TODO: Make sure that only the user can delete a participation
   try {
     await Participation.findByIdAndRemove(req.params.id);
     res.status(204).end();
@@ -61,31 +62,30 @@ participationsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
-// participationsRoutes.put('/:id', async (req, res, next) => {
-//   const body = req.body;
+participationsRoutes.put('/:id', async (req, res, next) => {
+  const body = req.body;
 
-//   // TODO: Make sure that only organizer can update the location
-//   try {
-//     const oldLocation = await Location.findById(req.params.id);
+  // TODO: Make sure that only organizer can update the location
+  try {
+    const oldParticipation = await Participation.findById(req.params.id);
 
-//     const newLocation = {
-//       name: body.name || oldLocation.name,
-//       address: body.address || oldLocation.address,
-//       phoneNum: body.phoneNum || oldLocation.phoneNum,
-//       webUrl: body.webUrl || oldLocation.webUrl
-//     };
+    const newParticipation = {
+      participant: oldParticipation.participant,
+      event: oldParticipation.event,
+      type: body.type || oldParticipation.type
+    };
 
-//     const location = await Location.findByIdAndUpdate(
-//       req.params.id,
-//       newLocation,
-//       {
-//         new: true
-//       }
-//     );
-//     res.json(location.toJSON());
-//   } catch (error) {
-//     return next(error);
-//   }
-// });
+    const participation = await Participation.findByIdAndUpdate(
+      req.params.id,
+      newParticipation,
+      {
+        new: true
+      }
+    );
+    res.json(participation.toJSON());
+  } catch (error) {
+    return next(error);
+  }
+});
 
 module.exports = participationsRoutes;

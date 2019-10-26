@@ -2,7 +2,11 @@ const locationsRoutes = require('express').Router();
 const Location = require('../models/Location');
 
 locationsRoutes.get('', async (req, res) => {
-  const locations = await Location.find({});
+  const locations = await Location.find({}).populate('events', {
+    name: 1,
+    startDate: 1,
+    endDate: 1
+  });
   res.json(locations.map(location => location.toJSON()));
 });
 

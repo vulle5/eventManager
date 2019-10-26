@@ -8,6 +8,7 @@ const { errorHandler, unknownEndpoint } = require('./utils/middleware');
 const eventsRoutes = require('./controllers/events');
 const locationsRoutes = require('./controllers/locations');
 const usersRoutes = require('./controllers/users');
+const eventSchema = require('./models/Event');
 
 mongoose
   .connect(process.env.MONGODB_URI, {

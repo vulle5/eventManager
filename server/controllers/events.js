@@ -30,6 +30,7 @@ eventsRoutes.get('/:id', async (req, res, next) => {
 eventsRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
+  // TODO: Make sure that only the user can creat an event
   try {
     const user = await User.findById(body.userId);
     const location = await Location.findById(body.locationId);
@@ -42,6 +43,7 @@ eventsRoutes.post('', async (req, res, next) => {
       organizer: user._id,
       location: location._id
     });
+
     const savedEvent = await event.save();
     user.events = user.events.concat(savedEvent._id);
     location.events = location.events.concat(savedEvent._id);
@@ -62,9 +64,13 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
+// TODO: Add user to event route
+// TODO: Make sure that only the user can register to an event
+
 eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
+  // TODO: Make sure that only organizer can update the event
   try {
     const oldEvent = await Event.findById(req.params.id);
 
@@ -72,7 +78,10 @@ eventsRoutes.put('/:id', async (req, res, next) => {
       name: body.name || oldEvent.name,
       startDate: body.startDate || oldEvent.startDate,
       endDate: body.endDate || oldEvent.endDate,
-      description: body.description || oldEvent.description
+      description: body.description || oldEvent.description,
+      organizer: body.userId || oldEvent.organizer,
+      location: body.locationId || oldEvent.location
+      // participants: oldEvent.participants
     };
 
     const event = await Event.findByIdAndUpdate(req.params.id, newEvent, {

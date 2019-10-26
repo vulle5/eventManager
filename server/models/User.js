@@ -15,6 +15,12 @@ const userSchema = mongoose.Schema({
       ref: 'Event'
     }
   ]
+  // participating: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: 'Event'
+  //   }
+  // ]
 });
 
 userSchema.plugin(uniqueValidator);

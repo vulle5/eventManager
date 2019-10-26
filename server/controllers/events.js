@@ -2,8 +2,10 @@ const eventsRoutes = require('express').Router();
 const Event = require('../models/Event');
 const User = require('../models/User');
 const Location = require('../models/Location');
-const addParticipants = require('../functions/addParticipants');
-const saveParticipationToUser = require('../functions/saveParticipationToUser');
+
+// TODO: Check that put works in event and participation
+// Participation update is used for updating status
+// Event update is used for updating event
 
 eventsRoutes.get('', async (req, res) => {
   const events = await Event.find({})
@@ -12,9 +14,11 @@ eventsRoutes.get('', async (req, res) => {
       username: 1
     })
     .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 })
-    .populate('yes', { username: 1, name: 1 })
-    .populate('maybe', { username: 1, name: 1 })
-    .populate('no', { username: 1, name: 1 });
+    .populate('participants', { participant: 1, type: 1 })
+    .populate({
+      path: 'participants',
+      populate: { path: 'participant', select: 'name username' }
+    });
   res.json(events.map(event => event.toJSON()));
 });
 
@@ -75,7 +79,6 @@ eventsRoutes.put('/:id', async (req, res, next) => {
   // TODO: Make sure that only organizer can update the event
   try {
     const oldEvent = await Event.findById(req.params.id);
-    const user = await User.findById(body.yes || body.maybe || body.no);
 
     const newEvent = {
       name: body.name || oldEvent.name,
@@ -83,15 +86,12 @@ eventsRoutes.put('/:id', async (req, res, next) => {
       endDate: body.endDate || oldEvent.endDate,
       description: body.description || oldEvent.description,
       organizer: body.userId || oldEvent.organizer,
-      location: body.locationId || oldEvent.location,
-      ...addParticipants(body, oldEvent, user._id)
+      location: body.locationId || oldEvent.location
     };
 
     const savedEvent = await Event.findByIdAndUpdate(req.params.id, newEvent, {
       new: true
     });
-    saveParticipationToUser(body, user, savedEvent._id);
-    await user.save();
     res.json(savedEvent.toJSON());
   } catch (error) {
     return next(error);

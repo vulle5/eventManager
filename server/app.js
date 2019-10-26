@@ -8,7 +8,7 @@ const { errorHandler, unknownEndpoint } = require('./utils/middleware');
 const eventsRoutes = require('./controllers/events');
 const locationsRoutes = require('./controllers/locations');
 const usersRoutes = require('./controllers/users');
-const eventSchema = require('./models/Event');
+const participationsRoutes = require('./controllers/participations');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -31,6 +31,7 @@ app.use(bodyParser.json());
 app.use('/api/events', eventsRoutes);
 app.use('/api/locations', locationsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/participations', participationsRoutes);
 // Post-request middleware
 app.use(unknownEndpoint);
 app.use(errorHandler);

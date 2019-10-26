@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// TODO: Participants are also going to be connected
-
 const eventSchema = new Schema({
   name: { type: String, required: true, maxlength: 50 },
   startDate: { type: Date, required: true },
@@ -16,22 +14,10 @@ const eventSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Location'
   },
-  yes: [
+  participants: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  maybe: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  no: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'Participation'
     }
   ]
 });

@@ -15,22 +15,10 @@ const userSchema = mongoose.Schema({
       ref: 'Event'
     }
   ],
-  participating: [
+  participations: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Event'
-    }
-  ],
-  maybeParticipating: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Event'
-    }
-  ],
-  notParticipating: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Event'
+      ref: 'Participation'
     }
   ]
 });

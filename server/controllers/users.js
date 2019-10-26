@@ -9,20 +9,10 @@ usersRoutes.get('/', async (req, res) => {
       startDate: 1,
       endDate: 1
     })
-    .populate('participating', {
-      name: 1,
-      startDate: 1,
-      endDate: 1
-    })
-    .populate('maybeParticipating', {
-      name: 1,
-      startDate: 1,
-      endDate: 1
-    })
-    .populate('notParticipating', {
-      name: 1,
-      startDate: 1,
-      endDate: 1
+    .populate('participations', { event: 1, type: 1 })
+    .populate({
+      path: 'participations',
+      populate: { path: 'event', select: 'name startDate endDate' }
     });
   res.json(users.map(u => u.toJSON()));
 });

@@ -71,23 +71,59 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
 eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
   function addParticipants(oldEvent, userId) {
-    // const oldParticipants = [
-    //   ...oldEvent.yes,
-    //   ...oldEvent.maybe,
-    //   ...oldEvent.no
-    // ];
-    if (body.yes) return { yes: oldEvent.yes.concat(body.yes) };
-    if (body.maybe) return { maybe: oldEvent.maybe.concat(body.maybe) };
-    if (body.no) return { no: oldEvent.no.concat(body.no) };
+    const yesRemoved = oldEvent.yes.filter(
+      id => id.toString() !== userId.toString()
+    );
+    const maybeRemoved = oldEvent.maybe.filter(
+      id => id.toString() !== userId.toString()
+    );
+    const noRemoved = oldEvent.no.filter(
+      id => id.toString() !== userId.toString()
+    );
+
+    if (body.yes)
+      return {
+        yes: yesRemoved.concat(body.yes),
+        maybe: maybeRemoved,
+        no: noRemoved
+      };
+    if (body.maybe)
+      return {
+        yes: yesRemoved,
+        maybe: maybeRemoved.concat(body.maybe),
+        no: noRemoved
+      };
+    if (body.no)
+      return {
+        yes: yesRemoved,
+        maybe: maybeRemoved,
+        no: noRemoved.concat(body.no)
+      };
     return null;
   }
   function saveParticipationToUser(user, eventId) {
+    const participatingRemoved = user.participating.filter(
+      id => id.toString() !== eventId.toString()
+    );
+    const maybeParticipatingRemoved = user.maybeParticipating.filter(
+      id => id.toString() !== eventId.toString()
+    );
+    const notParticipatingRemoved = user.notParticipating.filter(
+      id => id.toString() !== eventId.toString()
+    );
+
     if (body.yes) {
-      user.participating = user.participating.concat(eventId);
+      user.participating = participatingRemoved.concat(eventId);
+      user.maybeParticipating = maybeParticipatingRemoved;
+      user.notParticipating = notParticipatingRemoved;
     } else if (body.maybe) {
-      user.maybeParticipating = user.maybeParticipating.concat(eventId);
+      user.participating = participatingRemoved;
+      user.maybeParticipating = maybeParticipatingRemoved.concat(eventId);
+      user.notParticipating = notParticipatingRemoved;
     } else if (body.no) {
-      user.notParticipating = user.notParticipating.concat(eventId);
+      user.participating = participatingRemoved;
+      user.maybeParticipating = maybeParticipatingRemoved;
+      user.notParticipating = notParticipatingRemoved.concat(eventId);
     }
   }
   // TODO: Make sure that only organizer can update the event

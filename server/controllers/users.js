@@ -3,11 +3,27 @@ const usersRoutes = require('express').Router();
 const User = require('../models/User');
 
 usersRoutes.get('/', async (req, res) => {
-  const users = await User.find({}).populate('events', {
-    name: 1,
-    startDate: 1,
-    endDate: 1
-  });
+  const users = await User.find({})
+    .populate('events', {
+      name: 1,
+      startDate: 1,
+      endDate: 1
+    })
+    .populate('participating', {
+      name: 1,
+      startDate: 1,
+      endDate: 1
+    })
+    .populate('maybeParticipating', {
+      name: 1,
+      startDate: 1,
+      endDate: 1
+    })
+    .populate('notParticipating', {
+      name: 1,
+      startDate: 1,
+      endDate: 1
+    });
   res.json(users.map(u => u.toJSON()));
 });
 

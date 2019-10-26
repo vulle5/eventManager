@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const Location = require('./Location');
 
 // TODO: Participants are also going to be connected
 
@@ -16,23 +15,26 @@ const eventSchema = new Schema({
   location: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Location'
-  }
-  // participants: {
-  //   type: Map,
-  //   of: [
-  //     {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: 'User'
-  //     }
-  //   ]
-  // }
+  },
+  yes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+  maybe: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+  no: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ]
 });
-
-function removeLinkedDocuments(doc) {
-  // doc will be the removed Person document
-  //
-  // Location.updateOne()
-}
 
 eventSchema.set('toJSON', {
   transform: (doc, returnedObject) => {
@@ -40,10 +42,6 @@ eventSchema.set('toJSON', {
     delete returnedObject._id;
     delete returnedObject.__v;
   }
-});
-
-eventSchema.post('remove', (doc, next) => {
-  console.log(doc);
 });
 
 module.exports = mongoose.model('Event', eventSchema);

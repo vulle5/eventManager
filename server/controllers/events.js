@@ -9,7 +9,10 @@ eventsRoutes.get('', async (req, res) => {
       name: 1,
       username: 1
     })
-    .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 });
+    .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 })
+    .populate('yes', { username: 1, name: 1 })
+    .populate('maybe', { username: 1, name: 1 })
+    .populate('no', { username: 1, name: 1 });
   res.json(events.map(event => event.toJSON()));
 });
 
@@ -64,15 +67,28 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
-// TODO: Add user to event route
 // TODO: Make sure that only the user can register to an event
-
 eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
-
+  function addParticipants() {
+    if (body.yes) return { yes: body.yes };
+    if (body.maybe) return { maybe: body.maybe };
+    if (body.no) return { no: body.no };
+    return null;
+  }
+  function saveParticipationToUser(user, eventId) {
+    if (body.yes) {
+      user.participating = user.participating.concat(eventId);
+    } else if (body.maybe) {
+      user.maybeParticipating = user.maybeParticipating.concat(eventId);
+    } else if (body.no) {
+      user.notParticipating = user.notParticipating.concat(eventId);
+    }
+  }
   // TODO: Make sure that only organizer can update the event
   try {
     const oldEvent = await Event.findById(req.params.id);
+    const user = await User.findById(body.yes || body.maybe || body.no);
 
     const newEvent = {
       name: body.name || oldEvent.name,
@@ -80,14 +96,16 @@ eventsRoutes.put('/:id', async (req, res, next) => {
       endDate: body.endDate || oldEvent.endDate,
       description: body.description || oldEvent.description,
       organizer: body.userId || oldEvent.organizer,
-      location: body.locationId || oldEvent.location
-      // participants: oldEvent.participants
+      location: body.locationId || oldEvent.location,
+      ...addParticipants()
     };
 
-    const event = await Event.findByIdAndUpdate(req.params.id, newEvent, {
+    const savedEvent = await Event.findByIdAndUpdate(req.params.id, newEvent, {
       new: true
     });
-    res.json(event.toJSON());
+    saveParticipationToUser(user, savedEvent._id);
+    await user.save();
+    res.json(savedEvent.toJSON());
   } catch (error) {
     return next(error);
   }

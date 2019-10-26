@@ -27,6 +27,7 @@ locationsRoutes.get('/:id', async (req, res, next) => {
 locationsRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
+  // TODO: Make sure that only the user can creat an location
   try {
     const location = new Location({
       name: body.name,
@@ -53,6 +54,7 @@ locationsRoutes.delete('/:id', async (req, res, next) => {
 locationsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
+  // TODO: Make sure that only organizer can update the location
   try {
     const oldLocation = await Location.findById(req.params.id);
 

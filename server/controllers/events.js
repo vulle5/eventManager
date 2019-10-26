@@ -1,12 +1,15 @@
 const eventsRoutes = require('express').Router();
 const Event = require('../models/Event');
 const User = require('../models/User');
+const Location = require('../models/Location');
 
 eventsRoutes.get('', async (req, res) => {
-  const events = await Event.find({}).populate('organizer', {
-    name: 1,
-    username: 1
-  });
+  const events = await Event.find({})
+    .populate('organizer', {
+      name: 1,
+      username: 1
+    })
+    .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 });
   res.json(events.map(event => event.toJSON()));
 });
 
@@ -29,17 +32,21 @@ eventsRoutes.post('', async (req, res, next) => {
 
   try {
     const user = await User.findById(body.userId);
+    const location = await Location.findById(body.locationId);
 
     const event = new Event({
       name: body.name,
       startDate: body.startDate,
       endDate: body.endDate,
       description: body.description || '',
-      organizer: user._id
+      organizer: user._id,
+      location: location._id
     });
     const savedEvent = await event.save();
     user.events = user.events.concat(savedEvent._id);
+    location.events = location.events.concat(savedEvent._id);
     await user.save();
+    await location.save();
     res.status(201).json(savedEvent.toJSON());
   } catch (error) {
     return next(error);

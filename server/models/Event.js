@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// TODO: User is going to be connected to Event
-// TODO: Location is going to be connected to Event
 // TODO: Participants are also going to be connected
 
 const eventSchema = new Schema({
@@ -13,6 +11,10 @@ const eventSchema = new Schema({
   organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location'
   }
 });
 

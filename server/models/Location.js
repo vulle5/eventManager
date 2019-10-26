@@ -5,7 +5,13 @@ const locationSchema = new Schema({
   name: String,
   address: { type: String, required: true },
   phoneNum: String,
-  webUrl: String
+  webUrl: String,
+  events: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Event'
+    }
+  ]
 });
 
 locationSchema.set('toJSON', {

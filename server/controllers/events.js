@@ -70,10 +70,15 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
 // TODO: Make sure that only the user can register to an event
 eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
-  function addParticipants() {
-    if (body.yes) return { yes: body.yes };
-    if (body.maybe) return { maybe: body.maybe };
-    if (body.no) return { no: body.no };
+  function addParticipants(oldEvent, userId) {
+    // const oldParticipants = [
+    //   ...oldEvent.yes,
+    //   ...oldEvent.maybe,
+    //   ...oldEvent.no
+    // ];
+    if (body.yes) return { yes: oldEvent.yes.concat(body.yes) };
+    if (body.maybe) return { maybe: oldEvent.maybe.concat(body.maybe) };
+    if (body.no) return { no: oldEvent.no.concat(body.no) };
     return null;
   }
   function saveParticipationToUser(user, eventId) {
@@ -97,7 +102,7 @@ eventsRoutes.put('/:id', async (req, res, next) => {
       description: body.description || oldEvent.description,
       organizer: body.userId || oldEvent.organizer,
       location: body.locationId || oldEvent.location,
-      ...addParticipants()
+      ...addParticipants(oldEvent, user._id)
     };
 
     const savedEvent = await Event.findByIdAndUpdate(req.params.id, newEvent, {

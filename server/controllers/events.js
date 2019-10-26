@@ -2,6 +2,8 @@ const eventsRoutes = require('express').Router();
 const Event = require('../models/Event');
 const User = require('../models/User');
 const Location = require('../models/Location');
+const addParticipants = require('../functions/addParticipants');
+const saveParticipationToUser = require('../functions/saveParticipationToUser');
 
 eventsRoutes.get('', async (req, res) => {
   const events = await Event.find({})
@@ -70,62 +72,6 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
 // TODO: Make sure that only the user can register to an event
 eventsRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
-  function addParticipants(oldEvent, userId) {
-    const yesRemoved = oldEvent.yes.filter(
-      id => id.toString() !== userId.toString()
-    );
-    const maybeRemoved = oldEvent.maybe.filter(
-      id => id.toString() !== userId.toString()
-    );
-    const noRemoved = oldEvent.no.filter(
-      id => id.toString() !== userId.toString()
-    );
-
-    if (body.yes)
-      return {
-        yes: yesRemoved.concat(body.yes),
-        maybe: maybeRemoved,
-        no: noRemoved
-      };
-    if (body.maybe)
-      return {
-        yes: yesRemoved,
-        maybe: maybeRemoved.concat(body.maybe),
-        no: noRemoved
-      };
-    if (body.no)
-      return {
-        yes: yesRemoved,
-        maybe: maybeRemoved,
-        no: noRemoved.concat(body.no)
-      };
-    return null;
-  }
-  function saveParticipationToUser(user, eventId) {
-    const participatingRemoved = user.participating.filter(
-      id => id.toString() !== eventId.toString()
-    );
-    const maybeParticipatingRemoved = user.maybeParticipating.filter(
-      id => id.toString() !== eventId.toString()
-    );
-    const notParticipatingRemoved = user.notParticipating.filter(
-      id => id.toString() !== eventId.toString()
-    );
-
-    if (body.yes) {
-      user.participating = participatingRemoved.concat(eventId);
-      user.maybeParticipating = maybeParticipatingRemoved;
-      user.notParticipating = notParticipatingRemoved;
-    } else if (body.maybe) {
-      user.participating = participatingRemoved;
-      user.maybeParticipating = maybeParticipatingRemoved.concat(eventId);
-      user.notParticipating = notParticipatingRemoved;
-    } else if (body.no) {
-      user.participating = participatingRemoved;
-      user.maybeParticipating = maybeParticipatingRemoved;
-      user.notParticipating = notParticipatingRemoved.concat(eventId);
-    }
-  }
   // TODO: Make sure that only organizer can update the event
   try {
     const oldEvent = await Event.findById(req.params.id);
@@ -138,13 +84,13 @@ eventsRoutes.put('/:id', async (req, res, next) => {
       description: body.description || oldEvent.description,
       organizer: body.userId || oldEvent.organizer,
       location: body.locationId || oldEvent.location,
-      ...addParticipants(oldEvent, user._id)
+      ...addParticipants(body, oldEvent, user._id)
     };
 
     const savedEvent = await Event.findByIdAndUpdate(req.params.id, newEvent, {
       new: true
     });
-    saveParticipationToUser(user, savedEvent._id);
+    saveParticipationToUser(body, user, savedEvent._id);
     await user.save();
     res.json(savedEvent.toJSON());
   } catch (error) {

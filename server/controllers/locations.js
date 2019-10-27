@@ -1,7 +1,7 @@
-const locationsRoutes = require('express').Router();
+const locationRoutes = require('express').Router();
 const Location = require('../models/Location');
 
-locationsRoutes.get('', async (req, res) => {
+locationRoutes.get('', async (req, res) => {
   const locations = await Location.find({}).populate('events', {
     name: 1,
     startDate: 1,
@@ -10,7 +10,7 @@ locationsRoutes.get('', async (req, res) => {
   res.json(locations.map(location => location.toJSON()));
 });
 
-locationsRoutes.get('/:id', async (req, res, next) => {
+locationRoutes.get('/:id', async (req, res, next) => {
   try {
     const location = await Location.findById(req.params.id);
 
@@ -24,7 +24,7 @@ locationsRoutes.get('/:id', async (req, res, next) => {
   }
 });
 
-locationsRoutes.post('', async (req, res, next) => {
+locationRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   // TODO: Make sure that only the user can creat an location
@@ -42,7 +42,7 @@ locationsRoutes.post('', async (req, res, next) => {
   }
 });
 
-locationsRoutes.delete('/:id', async (req, res, next) => {
+locationRoutes.delete('/:id', async (req, res, next) => {
   try {
     await Location.findByIdAndRemove(req.params.id);
     res.status(204).end();
@@ -51,7 +51,7 @@ locationsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
-locationsRoutes.put('/:id', async (req, res, next) => {
+locationRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
   // TODO: Make sure that only organizer can update the location
@@ -78,4 +78,4 @@ locationsRoutes.put('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = locationsRoutes;
+module.exports = locationRoutes;

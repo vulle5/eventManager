@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
-const usersRoutes = require('express').Router();
+const userRoutes = require('express').Router();
 const User = require('../models/User');
 
-usersRoutes.get('/', async (req, res) => {
+userRoutes.get('/', async (req, res) => {
   const users = await User.find({})
     .populate('events', {
       name: 1,
@@ -17,7 +17,7 @@ usersRoutes.get('/', async (req, res) => {
   res.json(users.map(u => u.toJSON()));
 });
 
-usersRoutes.post('/', async (req, res, next) => {
+userRoutes.post('/', async (req, res, next) => {
   try {
     const body = req.body;
 
@@ -38,4 +38,4 @@ usersRoutes.post('/', async (req, res, next) => {
   }
 });
 
-module.exports = usersRoutes;
+module.exports = userRoutes;

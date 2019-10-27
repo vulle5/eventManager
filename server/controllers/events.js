@@ -1,9 +1,9 @@
-const eventsRoutes = require('express').Router();
+const eventRoutes = require('express').Router();
 const Event = require('../models/Event');
 const User = require('../models/User');
 const Location = require('../models/Location');
 
-eventsRoutes.get('', async (req, res) => {
+eventRoutes.get('', async (req, res) => {
   const events = await Event.find({})
     .populate('organizer', {
       name: 1,
@@ -18,7 +18,7 @@ eventsRoutes.get('', async (req, res) => {
   res.json(events.map(event => event.toJSON()));
 });
 
-eventsRoutes.get('/:id', async (req, res, next) => {
+eventRoutes.get('/:id', async (req, res, next) => {
   try {
     const event = await Event.findById(req.params.id);
 
@@ -32,7 +32,7 @@ eventsRoutes.get('/:id', async (req, res, next) => {
   }
 });
 
-eventsRoutes.post('', async (req, res, next) => {
+eventRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   // TODO: Make sure that only the user can creat an event
@@ -60,7 +60,7 @@ eventsRoutes.post('', async (req, res, next) => {
   }
 });
 
-eventsRoutes.delete('/:id', async (req, res, next) => {
+eventRoutes.delete('/:id', async (req, res, next) => {
   // TODO: Make sure that only the user can delete an event
   try {
     await Event.findByIdAndRemove(req.params.id);
@@ -70,7 +70,7 @@ eventsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
-eventsRoutes.put('/:id', async (req, res, next) => {
+eventRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
   // TODO: Make sure that only organizer can update the event
   try {
@@ -95,4 +95,4 @@ eventsRoutes.put('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = eventsRoutes;
+module.exports = eventRoutes;

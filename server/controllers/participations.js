@@ -1,9 +1,9 @@
-const participationsRoutes = require('express').Router();
+const participationRoutes = require('express').Router();
 const Participation = require('../models/Participation');
 const User = require('../models/User');
 const Event = require('../models/Event');
 
-participationsRoutes.get('', async (req, res) => {
+participationRoutes.get('', async (req, res) => {
   const participations = await Participation.find({})
     .populate('participant', {
       name: 1,
@@ -13,7 +13,7 @@ participationsRoutes.get('', async (req, res) => {
   res.json(participations.map(participation => participation.toJSON()));
 });
 
-participationsRoutes.get('/:id', async (req, res, next) => {
+participationRoutes.get('/:id', async (req, res, next) => {
   try {
     const participation = await Participation.findById(req.params.id);
 
@@ -27,7 +27,7 @@ participationsRoutes.get('/:id', async (req, res, next) => {
   }
 });
 
-participationsRoutes.post('', async (req, res, next) => {
+participationRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
   // TODO: Make sure that only the user can creat a participation
@@ -52,7 +52,7 @@ participationsRoutes.post('', async (req, res, next) => {
   }
 });
 
-participationsRoutes.delete('/:id', async (req, res, next) => {
+participationRoutes.delete('/:id', async (req, res, next) => {
   // TODO: Make sure that only the user can delete a participation
   try {
     await Participation.findByIdAndRemove(req.params.id);
@@ -62,7 +62,7 @@ participationsRoutes.delete('/:id', async (req, res, next) => {
   }
 });
 
-participationsRoutes.put('/:id', async (req, res, next) => {
+participationRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
   // TODO: Make sure that only organizer can update the location
@@ -88,4 +88,4 @@ participationsRoutes.put('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = participationsRoutes;
+module.exports = participationRoutes;

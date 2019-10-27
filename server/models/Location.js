@@ -11,7 +11,11 @@ const locationSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Event'
     }
-  ]
+  ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 });
 
 locationSchema.set('toJSON', {

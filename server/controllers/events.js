@@ -20,7 +20,17 @@ eventRoutes.get('', async (req, res) => {
 
 eventRoutes.get('/:id', async (req, res, next) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findById(req.params.id)
+      .populate('organizer', {
+        name: 1,
+        username: 1
+      })
+      .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 })
+      .populate('participants', { participant: 1, type: 1 })
+      .populate({
+        path: 'participants',
+        populate: { path: 'participant', select: 'name username' }
+      });
 
     if (event) {
       res.json(event.toJSON());
@@ -35,9 +45,8 @@ eventRoutes.get('/:id', async (req, res, next) => {
 eventRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
-  // TODO: Make sure that only the user can creat an event
   try {
-    const user = await User.findById(body.userId);
+    const user = await User.findById(req.user.id);
     const location = await Location.findById(body.locationId);
 
     const event = new Event({
@@ -48,8 +57,8 @@ eventRoutes.post('', async (req, res, next) => {
       organizer: user._id,
       location: location._id
     });
-
     const savedEvent = await event.save();
+
     user.events = user.events.concat(savedEvent._id);
     location.events = location.events.concat(savedEvent._id);
     await user.save();
@@ -61,10 +70,15 @@ eventRoutes.post('', async (req, res, next) => {
 });
 
 eventRoutes.delete('/:id', async (req, res, next) => {
-  // TODO: Make sure that only the user can delete an event
   try {
-    await Event.findByIdAndRemove(req.params.id);
-    res.status(204).end();
+    const event = await Event.findById(req.params.id).populate('organizer');
+
+    if (event.organizer.id === req.user.id) {
+      await Event.findByIdAndRemove(req.params.id);
+      res.status(204).end();
+    } else {
+      res.status(401).send({ error: 'Cannot delete event wrong user' });
+    }
   } catch (error) {
     return next(error);
   }
@@ -72,24 +86,32 @@ eventRoutes.delete('/:id', async (req, res, next) => {
 
 eventRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
-  // TODO: Make sure that only organizer can update the event
+
   try {
-    const oldEvent = await Event.findById(req.params.id);
+    const oldEvent = await Event.findById(req.params.id).populate('organizer');
 
-    const newEvent = {
-      name: body.name || oldEvent.name,
-      startDate: body.startDate || oldEvent.startDate,
-      endDate: body.endDate || oldEvent.endDate,
-      description: body.description || oldEvent.description,
-      organizer: body.userId || oldEvent.organizer,
-      location: body.locationId || oldEvent.location,
-      participants: oldEvent.participants
-    };
+    if (oldEvent.organizer.id === req.user.id) {
+      const newEvent = {
+        name: body.name || oldEvent.name,
+        startDate: body.startDate || oldEvent.startDate,
+        endDate: body.endDate || oldEvent.endDate,
+        description: body.description || oldEvent.description,
+        organizer: body.userId || oldEvent.organizer,
+        location: body.locationId || oldEvent.location,
+        participants: oldEvent.participants
+      };
 
-    const savedEvent = await Event.findByIdAndUpdate(req.params.id, newEvent, {
-      new: true
-    });
-    res.json(savedEvent.toJSON());
+      const savedEvent = await Event.findByIdAndUpdate(
+        req.params.id,
+        newEvent,
+        {
+          new: true
+        }
+      );
+      res.json(savedEvent.toJSON());
+    } else {
+      res.status(401).send({ error: 'Cannot update event wrong user' });
+    }
   } catch (error) {
     return next(error);
   }

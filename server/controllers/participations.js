@@ -15,7 +15,12 @@ participationRoutes.get('', async (req, res) => {
 
 participationRoutes.get('/:id', async (req, res, next) => {
   try {
-    const participation = await Participation.findById(req.params.id);
+    const participation = await Participation.findById(req.params.id)
+      .populate('participant', {
+        name: 1,
+        username: 1
+      })
+      .populate('event', { name: 1, startDate: 1, endDate: 1 });
 
     if (participation) {
       res.json(participation.toJSON());
@@ -30,9 +35,8 @@ participationRoutes.get('/:id', async (req, res, next) => {
 participationRoutes.post('', async (req, res, next) => {
   const body = req.body;
 
-  // TODO: Make sure that only the user can creat a participation
   try {
-    const user = await User.findById(body.userId);
+    const user = await User.findById(req.user.id);
     const event = await Event.findById(body.eventId);
 
     const participation = new Participation({
@@ -40,8 +44,8 @@ participationRoutes.post('', async (req, res, next) => {
       event: event._id,
       type: body.type
     });
-
     const savedParticipation = await participation.save();
+
     user.participations = user.participations.concat(savedParticipation._id);
     event.participants = event.participants.concat(savedParticipation._id);
     await user.save();
@@ -53,10 +57,17 @@ participationRoutes.post('', async (req, res, next) => {
 });
 
 participationRoutes.delete('/:id', async (req, res, next) => {
-  // TODO: Make sure that only the user can delete a participation
   try {
-    await Participation.findByIdAndRemove(req.params.id);
-    res.status(204).end();
+    const participation = await Participation.findById(req.params.id).populate(
+      'participant'
+    );
+
+    if (participation.participant.id === req.user.id) {
+      await Participation.findByIdAndRemove(req.params.id);
+      res.status(204).end();
+    } else {
+      res.status(401).send({ error: 'Cannot delete participation wrong user' });
+    }
   } catch (error) {
     return next(error);
   }
@@ -65,24 +76,29 @@ participationRoutes.delete('/:id', async (req, res, next) => {
 participationRoutes.put('/:id', async (req, res, next) => {
   const body = req.body;
 
-  // TODO: Make sure that only organizer can update the location
   try {
-    const oldParticipation = await Participation.findById(req.params.id);
+    const oldParticipation = await Participation.findById(
+      req.params.id
+    ).populate('participant');
 
-    const newParticipation = {
-      participant: oldParticipation.participant,
-      event: oldParticipation.event,
-      type: body.type || oldParticipation.type
-    };
+    if (oldParticipation.participant.id === req.user.id) {
+      const newParticipation = {
+        participant: oldParticipation.participant,
+        event: oldParticipation.event,
+        type: body.type || oldParticipation.type
+      };
 
-    const participation = await Participation.findByIdAndUpdate(
-      req.params.id,
-      newParticipation,
-      {
-        new: true
-      }
-    );
-    res.json(participation.toJSON());
+      const participation = await Participation.findByIdAndUpdate(
+        req.params.id,
+        newParticipation,
+        {
+          new: true
+        }
+      );
+      res.json(participation.toJSON());
+    } else {
+      res.status(401).send({ error: 'Cannot update participation wrong user' });
+    }
   } catch (error) {
     return next(error);
   }

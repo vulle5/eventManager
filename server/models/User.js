@@ -15,6 +15,12 @@ const userSchema = mongoose.Schema({
       ref: 'Event'
     }
   ],
+  locations: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Location'
+    }
+  ],
   participations: [
     {
       type: mongoose.Schema.Types.ObjectId,

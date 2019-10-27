@@ -4,11 +4,16 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { errorHandler, unknownEndpoint } = require('./utils/middleware');
+const {
+  errorHandler,
+  unknownEndpoint,
+  authentication
+} = require('./utils/middleware');
 const eventRoutes = require('./controllers/events');
 const locationRoutes = require('./controllers/locations');
 const userRoutes = require('./controllers/users');
 const participationRoutes = require('./controllers/participations');
+const loginRoutes = require('./controllers/login');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -27,11 +32,13 @@ mongoose
 // Pre-request middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/api', authentication);
 // Routes
 app.use('/api/events', eventRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/participations', participationRoutes);
+app.use('/login', loginRoutes);
 // Post-request middleware
 app.use(unknownEndpoint);
 app.use(errorHandler);

@@ -36,7 +36,7 @@ app.use('/api', authentication);
 // Routes
 app.use('/api/events', eventRoutes);
 app.use('/api/locations', locationRoutes);
-app.use('/api/users', userRoutes);
+app.use('/auth/users', userRoutes);
 app.use('/api/participations', participationRoutes);
 app.use('/auth/login', loginRoutes);
 // Post-request middleware

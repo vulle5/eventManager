@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
     minlength: 3
   },
   name: String,
-  passwordHash: String,
+  passwordHash: { type: String, minlength: 6 },
   events: [
     {
       type: mongoose.Schema.Types.ObjectId,

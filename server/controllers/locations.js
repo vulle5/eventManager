@@ -40,6 +40,8 @@ locationRoutes.post('', async (req, res, next) => {
     const location = new Location({
       name: body.name,
       address: body.address,
+      areaCode: body.areaCode,
+      city: body.city,
       phoneNum: body.phoneNum,
       webUrl: body.webUrl,
       user: user._id
@@ -83,6 +85,8 @@ locationRoutes.put('/:id', async (req, res, next) => {
       const newLocation = {
         name: body.name || oldLocation.name,
         address: body.address || oldLocation.address,
+        areaCode: body.areaCode || oldLocation.areaCode,
+        city: body.city || oldLocation.city,
         phoneNum: body.phoneNum || oldLocation.phoneNum,
         webUrl: body.webUrl || oldLocation.webUrl
       };

@@ -9,7 +9,14 @@ userRoutes.get('/', async (req, res) => {
       startDate: 1,
       endDate: 1
     })
-    .populate('locations', { name: 1, address: 1, phoneNum: 1, webUrl: 1 })
+    .populate('locations', {
+      name: 1,
+      address: 1,
+      areaCode: 1,
+      city: 1,
+      phoneNum: 1,
+      webUrl: 1
+    })
     .populate('participations', { event: 1, type: 1 })
     .populate({
       path: 'participations',

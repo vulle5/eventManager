@@ -4,6 +4,8 @@ const { Schema } = mongoose;
 const locationSchema = new Schema({
   name: String,
   address: { type: String, required: true },
+  areaCode: { type: String, required: true },
+  city: { type: String, required: true },
   phoneNum: String,
   webUrl: String,
   events: [

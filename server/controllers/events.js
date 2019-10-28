@@ -25,7 +25,14 @@ eventRoutes.get('/:id', async (req, res, next) => {
         name: 1,
         username: 1
       })
-      .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 })
+      .populate('location', {
+        name: 1,
+        address: 1,
+        areaCode: 1,
+        city: 1,
+        phoneNum: 1,
+        webUrl: 1
+      })
       .populate('participants', { participant: 1, type: 1 })
       .populate({
         path: 'participants',

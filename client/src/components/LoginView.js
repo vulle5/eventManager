@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TextField, Paper, Typography, Button } from '@material-ui/core';
@@ -9,6 +9,13 @@ function LoginView({ authUser }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    if (loggedUserJSON) {
+      history.replace('/');
+    }
+  }, [history]);
 
   const handleLogin = event => {
     event.preventDefault();

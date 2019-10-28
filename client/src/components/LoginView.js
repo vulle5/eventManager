@@ -8,6 +8,8 @@ import { authUser } from '../reducers/loginReducer';
 function LoginView({ authUser }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
 
   useEffect(() => {
@@ -22,7 +24,15 @@ function LoginView({ authUser }) {
 
     authUser(username, password)
       .then(() => history.replace('/'))
-      .catch(error => console.log('Failed login'));
+      .catch(error => {
+        if (error.response.status === 401) {
+          setErrorMessage('Virheellinen tunnus tai salasana');
+          setHasError(true);
+        } else {
+          setErrorMessage('Tuntematon virhe');
+          setHasError(true);
+        }
+      });
   };
 
   return (
@@ -40,7 +50,10 @@ function LoginView({ authUser }) {
           textAlign: 'center'
         }}
       >
-        <Typography variant="h5">Kirjaudu sisään</Typography>
+        <Typography style={{ margin: '8px 0px' }} variant="h5">
+          Kirjaudu sisään
+        </Typography>
+        {hasError && <Typography color="error">{errorMessage}</Typography>}
         <form noValidate autoComplete="off" onSubmit={handleLogin}>
           <TextField
             id="username"

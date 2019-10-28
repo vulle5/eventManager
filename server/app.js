@@ -13,6 +13,7 @@ const eventRoutes = require('./controllers/events');
 const locationRoutes = require('./controllers/locations');
 const userRoutes = require('./controllers/users');
 const participationRoutes = require('./controllers/participations');
+const commentRoutes = require('./controllers/comments');
 const loginRoutes = require('./controllers/login');
 
 mongoose
@@ -36,8 +37,9 @@ app.use('/api', authentication);
 // Routes
 app.use('/api/events', eventRoutes);
 app.use('/api/locations', locationRoutes);
-app.use('/auth/users', userRoutes);
 app.use('/api/participations', participationRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/auth/users', userRoutes);
 app.use('/auth/login', loginRoutes);
 // Post-request middleware
 app.use(unknownEndpoint);

@@ -19,6 +19,12 @@ const eventSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Participation'
     }
+  ],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment'
+    }
   ]
 });
 

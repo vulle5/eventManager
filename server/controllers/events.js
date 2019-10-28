@@ -10,9 +10,14 @@ eventRoutes.get('', async (req, res) => {
       username: 1
     })
     .populate('location', { name: 1, address: 1, phoneNum: 1, webUrl: 1 })
-    .populate('participants', { participant: 1, type: 1 })
+    .populate({
+      path: 'comments',
+      select: 'comment likes',
+      populate: { path: 'user', select: 'name username' }
+    })
     .populate({
       path: 'participants',
+      select: 'type',
       populate: { path: 'participant', select: 'name username' }
     });
   res.json(events.map(event => event.toJSON()));

@@ -38,7 +38,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/participations', participationRoutes);
-app.use('/login', loginRoutes);
+app.use('/auth/login', loginRoutes);
 // Post-request middleware
 app.use(unknownEndpoint);
 app.use(errorHandler);

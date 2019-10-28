@@ -22,7 +22,8 @@ function LoginView({ authUser }) {
     <div
       style={{
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: '20%'
       }}
     >
       <Paper

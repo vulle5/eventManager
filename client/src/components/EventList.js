@@ -35,6 +35,7 @@ function EventList({ token }) {
         {events.map(event => (
           <EventItem
             key={event.id}
+            id={event.id}
             name={event.name}
             description={event.description}
             organizer={event.organizer}

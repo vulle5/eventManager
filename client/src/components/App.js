@@ -6,6 +6,7 @@ import LoginView from './LoginView';
 import PrivateRoute from './PrivateRoute';
 import Home from './Home';
 import HeaderBar from './HeaderBar';
+import EventView from './EventView';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <HeaderBar />
         <Switch>
           <PrivateRoute exact path="/" component={Home} />
+          <PrivateRoute path="/event/:id" component={EventView} />
           <Route path="/login" component={LoginView} />
         </Switch>
       </BrowserRouter>

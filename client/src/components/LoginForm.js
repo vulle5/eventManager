@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { TextField, Typography, Button } from '@material-ui/core';
 
@@ -11,12 +11,14 @@ function LoginForm({ authUser, showCreateForm }) {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
+  const location = useLocation();
 
   const handleLogin = event => {
     event.preventDefault();
+    const { from } = location.state || { from: { pathname: '/' } };
 
     authUser(username, password)
-      .then(() => history.replace('/'))
+      .then(() => history.replace(from))
       .catch(error => {
         if (error.response.status === 401) {
           setErrorMessage('Virheellinen tunnus tai salasana');

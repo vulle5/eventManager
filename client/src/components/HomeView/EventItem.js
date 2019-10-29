@@ -8,13 +8,11 @@ import {
   CardActions,
   Button,
   CardHeader,
-  Avatar,
-  IconButton
+  Avatar
 } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
 
-import placeholder from '../assets/placeholder.jpg';
-import { useEventItemStyles } from '../styles/styles';
+import placeholder from '../../assets/placeholder.jpg';
+import { useEventItemStyles } from '../../styles/styles';
 
 function EventItem({
   id = '',
@@ -36,11 +34,6 @@ function EventItem({
         }
         title={organizer.name}
         subheader={startDate}
-        action={
-          <IconButton aria-label="settings">
-            <MoreVert />
-          </IconButton>
-        }
       />
       <CardMedia
         style={{ height: 140 }}

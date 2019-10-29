@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TextField, Typography, Button } from '@material-ui/core';
 
-import { authUser } from '../reducers/loginReducer';
-import userServices from '../services/user';
+import { authUser } from '../../reducers/loginReducer';
+import userServices from '../../services/user';
 
 function CreateUserForm({ authUser }) {
   const [name, setName] = useState('');

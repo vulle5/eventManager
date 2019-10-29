@@ -13,8 +13,8 @@ import moment from 'moment';
 import 'moment/locale/fi';
 import { get } from 'lodash';
 
-import eventServices from '../services/events';
-import placeholder from '../assets/placeholder.jpg';
+import eventServices from '../../services/events';
+import placeholder from '../../assets/placeholder.jpg';
 
 function EventView({ match: { params }, token }) {
   const [event, setEvent] = useState(null);

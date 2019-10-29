@@ -5,9 +5,9 @@ import moment from 'moment';
 import 'moment/locale/fi';
 import { get } from 'lodash';
 
-import eventServices from '../services/events';
+import eventServices from '../../services/events';
 import EventItem from './EventItem';
-import { useEventListStyles } from '../styles/styles';
+import { useEventListStyles } from '../../styles/styles';
 
 function EventList({ token }) {
   const [events, setEvents] = useState(null);

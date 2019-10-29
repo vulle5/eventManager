@@ -3,7 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { TextField, Typography, Button } from '@material-ui/core';
 
-import { authUser } from '../reducers/loginReducer';
+import { authUser } from '../../reducers/loginReducer';
 
 function LoginForm({ authUser, showCreateForm }) {
   const [username, setUsername] = useState('');

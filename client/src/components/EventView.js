@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import {
   Paper,
   Typography,
   Avatar,
   ListItem,
   ListItemText,
-  ListItemAvatar
+  ListItemAvatar,
+  CircularProgress
 } from '@material-ui/core';
+import moment from 'moment';
+import 'moment/locale/fi';
+import { get } from 'lodash';
 
+import eventServices from '../services/events';
 import placeholder from '../assets/placeholder.jpg';
 
-function EventView({ match: { params } }) {
-  console.log(params.id);
+function EventView({ match: { params }, token }) {
+  const [event, setEvent] = useState(null);
+
+  useEffect(() => {
+    if (token) {
+      eventServices
+        .getEventWithId(token, params.id)
+        .then(event => setEvent(event))
+        .catch(err => console.log(err));
+    }
+  }, [token, params.id]);
+
+  if (!event) {
+    return <CircularProgress />;
+  }
+
   return (
     <div style={{ paddingTop: 16 }}>
       <Paper style={{ maxWidth: 1000, margin: 'auto', padding: 16 }}>
@@ -22,7 +42,7 @@ function EventView({ match: { params } }) {
           }}
         >
           <Typography variant="h3" style={{ padding: 8 }}>
-            Maken Bändi
+            {event.name}
           </Typography>
           <div
             style={{
@@ -31,9 +51,17 @@ function EventView({ match: { params } }) {
               alignItems: 'center'
             }}
           >
-            <Typography>2019-29-10, klo 18:00</Typography>
+            <Typography>
+              {moment(event.startDate)
+                .local('fi')
+                .format('DD.MMM YYYY, HH:mm')}
+            </Typography>
             <Typography style={{ margin: 8 }}> – </Typography>
-            <Typography>2019-29-10, klo 22:00</Typography>
+            <Typography>
+              {moment(event.endDate)
+                .local('fi')
+                .format('DD.MMM YYYY, HH:mm')}
+            </Typography>
           </div>
         </div>
         <img
@@ -43,9 +71,9 @@ function EventView({ match: { params } }) {
         />
         <ListItem style={{ maxWidth: 200, marginBottom: 32 }} disableGutters>
           <ListItemAvatar>
-            <Avatar>A</Avatar>
+            <Avatar>{event.organizer.name.substring(0, 1)}</Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Severi Tikkanen" />
+          <ListItemText primary={event.organizer.name} />
         </ListItem>
         <div style={{ display: 'flex', alignItems: 'baseline' }}>
           <Typography
@@ -55,16 +83,41 @@ function EventView({ match: { params } }) {
             Tapahtuma paikka:
           </Typography>
           <Typography variant="subtitle1">
-            Urho kekkosen katu 3 A, 00100 Helsinki
+            {`${event.location.name ? `${event.location.name}, ` : ''} ${
+              event.location.address
+            }, ${event.location.areaCode} ${event.location.city}`}
           </Typography>
         </div>
         <Typography variant="h5" style={{ marginBottom: 16 }}>
           Tapahtuman kuvaus
         </Typography>
-        <Typography variant="subtitle1">Tapahtuman kuvaus</Typography>
+        <Typography variant="subtitle1" style={{ marginBottom: 32 }}>
+          {event.description}
+        </Typography>
+        <Typography variant="h5" style={{ marginBottom: 16 }}>
+          Tiedot
+        </Typography>
+        <Typography variant="subtitle1">{`puh: ${get(
+          event.location,
+          'phoneNum',
+          ''
+        )}`}</Typography>
+        <Typography variant="subtitle1">
+          <a href={`http://${get(event.location, 'webUrl', '')}`}>{`web: ${get(
+            event.location,
+            'webUrl',
+            ''
+          )}`}</a>
+        </Typography>
       </Paper>
     </div>
   );
 }
 
-export default EventView;
+const mapStateToProps = state => {
+  return {
+    token: get(state, 'user.token', null)
+  };
+};
+
+export default connect(mapStateToProps)(EventView);

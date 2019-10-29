@@ -41,7 +41,7 @@ function EventList({ token }) {
             organizer={event.organizer}
             startDate={moment(event.startDate)
               .locale('fi')
-              .format('MMM DD YYYY, HH:mm')}
+              .format('DD.MMM YYYY, HH:mm')}
           />
         ))}
       </div>

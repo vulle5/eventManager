@@ -27,3 +27,20 @@ export const useEventItemStyles = makeStyles(theme => ({
     marginRight: 16
   }
 }));
+
+export const useFloatingActionButtonStyles = makeStyles(theme => ({
+  root: {
+    display: 'inline-block'
+  },
+  fab: {
+    margin: '0',
+    top: 'auto',
+    right: '16px',
+    bottom: '16px',
+    left: 'auto',
+    position: 'fixed'
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  }
+}));

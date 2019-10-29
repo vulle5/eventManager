@@ -29,7 +29,7 @@ function EventList({ token }) {
   return (
     <div>
       <Typography variant="h2" className={classes.title}>
-        Events
+        Tapahtumat
       </Typography>
       <div className={classes.eventWrapper}>
         {events.map(event => (

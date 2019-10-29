@@ -21,4 +21,11 @@ const getEventWithId = async (token, eventId) => {
   return response.data;
 };
 
-export default { getEvents, getEventWithId };
+const createEvent = async (token, event) => {
+  const config = createConfig(token);
+
+  const response = await axios.post(baseUrl, event, config);
+  return response.data;
+};
+
+export default { getEvents, getEventWithId, createEvent };

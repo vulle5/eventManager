@@ -1,9 +1,15 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { AppBar, Typography, Toolbar, Button } from '@material-ui/core';
 import { useHeaderBarStyles } from '../styles/styles';
 
 function HeaderBar() {
   const classes = useHeaderBarStyles();
+  const { pathname } = useLocation();
+
+  if (pathname === '/login') {
+    return null;
+  }
 
   return (
     <div className={classes.root}>

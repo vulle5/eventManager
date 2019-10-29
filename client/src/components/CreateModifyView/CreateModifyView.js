@@ -26,6 +26,7 @@ function CreateModifyView({ token }) {
   const [locations, setLocations] = useState(null);
   const history = useHistory();
 
+  // TODO: Add location creation
   useEffect(() => {
     if (token) {
       locationServices
@@ -42,10 +43,6 @@ function CreateModifyView({ token }) {
       .createEvent(token, { name, startDate, endDate, description, locationId })
       .then(_ => history.replace('/'))
       .catch(err => console.log(err));
-  };
-
-  const handleLocationChange = event => {
-    setLocationId(event.target.value);
   };
 
   const validateFields = () => {
@@ -98,7 +95,7 @@ function CreateModifyView({ token }) {
             label="Tapahtuman sijainti"
             select
             value={locationId}
-            onChange={handleLocationChange}
+            onChange={({ target }) => setLocationId(target.value)}
             margin="normal"
             variant="outlined"
             fullWidth

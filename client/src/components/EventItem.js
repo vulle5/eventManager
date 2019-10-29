@@ -14,14 +14,21 @@ import {
 import { MoreVert } from '@material-ui/icons';
 
 import placeholder from '../assets/placeholder.jpg';
+import { useEventItemStyles } from '../styles/styles';
 
-function EventItem() {
+function EventItem({ name, description, organizer, startDate }) {
+  const classes = useEventItemStyles();
+
   return (
-    <Card style={{ maxWidth: 345 }}>
+    <Card className={classes.root}>
       <CardHeader
-        avatar={<Avatar aria-label="Event host">A</Avatar>}
-        title="Severi Tikkanen"
-        subheader="Nov 14, 2019"
+        avatar={
+          <Avatar aria-label="Event host">
+            {organizer.name.substring(0, 1)}
+          </Avatar>
+        }
+        title={organizer.name}
+        subheader={startDate}
         action={
           <IconButton aria-label="settings">
             <MoreVert />
@@ -36,20 +43,19 @@ function EventItem() {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Matin Bändi
+            {name}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Matin bändi soittaa musiikkia Tavastialla Marraskuussa Rock
-            musiikkia. Vain yli 18-vuotiaille
+            {description}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
-          Learn More
+          Tarkemmat Tiedot
         </Button>
         <Button size="small" color="primary">
-          Like This
+          Tykkää
         </Button>
       </CardActions>
     </Card>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Typography, CircularProgress } from '@material-ui/core';
 import moment from 'moment';
+import 'moment/locale/fi';
 import { get } from 'lodash';
 
 import eventServices from '../services/events';
@@ -37,7 +38,9 @@ function EventList({ token }) {
             name={event.name}
             description={event.description}
             organizer={event.organizer}
-            startDate={moment(event.startDate).format('MMM DD YYYY, HH:mm')}
+            startDate={moment(event.startDate)
+              .locale('fi')
+              .format('MMM DD YYYY, HH:mm')}
           />
         ))}
       </div>

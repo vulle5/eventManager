@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 
 import LoginForm from './LoginForm';
 import CreateUserForm from './CreateUserForm';
@@ -19,16 +19,18 @@ function LoginView() {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20%'
+        textAlign: 'center',
+        paddingTop: '32px'
       }}
     >
+      <Typography variant="h3" style={{ marginTop: 32, marginBottom: 48 }}>
+        Event Manager
+      </Typography>
       <Paper
         style={{
           maxWidth: 300,
           padding: '8px 16px',
-          textAlign: 'center'
+          margin: 'auto'
         }}
       >
         {!showCreateUser && <LoginForm showCreateForm={setShowCreateUser} />}

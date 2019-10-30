@@ -7,17 +7,21 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  CircularProgress
+  CircularProgress,
+  Button,
+  ButtonGroup
 } from '@material-ui/core';
 import moment from 'moment';
 import 'moment/locale/fi';
 import { get } from 'lodash';
 
 import eventServices from '../../services/events';
+import participationServices from '../../services/participations';
 import placeholder from '../../assets/placeholder.jpg';
 
-function EventView({ match: { params }, token }) {
+function EventView({ match: { params }, token, username }) {
   const [event, setEvent] = useState(null);
+  const [didUpdate, setDidUpdate] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -26,14 +30,32 @@ function EventView({ match: { params }, token }) {
         .then(event => setEvent(event))
         .catch(err => console.log(err));
     }
-  }, [token, params.id]);
+  }, [token, params.id, didUpdate]);
+
+  const onPartaking = type => {
+    const hasParticipation = event.participants.filter(
+      ({ participant }) => participant.username === username
+    );
+
+    if (hasParticipation.length === 1) {
+      participationServices
+        .updateParticipation(token, hasParticipation[0].id, { type })
+        .then(_ => setDidUpdate(!didUpdate))
+        .catch(err => console.log(err));
+    } else {
+      participationServices
+        .createParticipation(token, { type, eventId: event.id })
+        .then(_ => setDidUpdate(!didUpdate))
+        .catch(err => console.log(err));
+    }
+  };
 
   if (!event) {
     return <CircularProgress />;
   }
 
   return (
-    <div style={{ paddingTop: 16 }}>
+    <div style={{ padding: '16px 0px' }}>
       <Paper style={{ maxWidth: 1000, margin: 'auto', padding: 16 }}>
         <div
           style={{
@@ -98,11 +120,34 @@ function EventView({ match: { params }, token }) {
           Tiedot
         </Typography>
         <Typography variant="subtitle1">{`puh: ${event.location.phoneNum}`}</Typography>
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle1" style={{ marginBottom: 32 }}>
           <a
             href={`http://${event.location.webUrl}`}
           >{`web: ${event.location.webUrl}`}</a>
         </Typography>
+        <Typography variant="h5" style={{ marginBottom: 16 }}>
+          Haluan Osallistua...
+        </Typography>
+        <ButtonGroup
+          color="primary"
+          variant="contained"
+          aria-label="Participation buttons"
+          fullWidth
+        >
+          <Button onClick={() => onPartaking('yes')}>{`Kyllä (${
+            event.participants.filter(participant => participant.type === 'yes')
+              .length
+          })`}</Button>
+          <Button onClick={() => onPartaking('no')}>{`Ei (${
+            event.participants.filter(participant => participant.type === 'no')
+              .length
+          })`}</Button>
+          <Button onClick={() => onPartaking('maybe')}>{`Ehkä (${
+            event.participants.filter(
+              participant => participant.type === 'maybe'
+            ).length
+          })`}</Button>
+        </ButtonGroup>
       </Paper>
     </div>
   );
@@ -110,7 +155,8 @@ function EventView({ match: { params }, token }) {
 
 const mapStateToProps = state => {
   return {
-    token: get(state, 'user.token', null)
+    token: get(state, 'user.token', null),
+    username: get(state, 'user.username', null)
   };
 };
 

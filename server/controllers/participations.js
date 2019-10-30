@@ -37,20 +37,28 @@ participationRoutes.post('', async (req, res, next) => {
 
   try {
     const user = await User.findById(req.user.id);
-    const event = await Event.findById(body.eventId);
+    const event = await Event.findById(body.eventId).populate('participants');
 
-    const participation = new Participation({
-      participant: user._id,
-      event: event._id,
-      type: body.type
-    });
-    const savedParticipation = await participation.save();
+    if (
+      event.participants.some(
+        ({ participant }) => participant.toString() === req.user.id
+      )
+    ) {
+      res.status(400).send({ error: 'Already participated' });
+    } else {
+      const participation = new Participation({
+        participant: user._id,
+        event: event._id,
+        type: body.type
+      });
+      const savedParticipation = await participation.save();
 
-    user.participations = user.participations.concat(savedParticipation._id);
-    event.participants = event.participants.concat(savedParticipation._id);
-    await user.save();
-    await event.save();
-    res.status(201).json(savedParticipation.toJSON());
+      user.participations = user.participations.concat(savedParticipation._id);
+      event.participants = event.participants.concat(savedParticipation._id);
+      await user.save();
+      await event.save();
+      res.status(201).json(savedParticipation.toJSON());
+    }
   } catch (error) {
     return next(error);
   }

@@ -71,8 +71,6 @@ function CreateModifyView({ token, location: { search } }) {
     event.preventDefault();
 
     if (search) {
-      console.log('hello');
-      console.log(eventId);
       eventServices
         .updateEvent(token, eventId, {
           name,

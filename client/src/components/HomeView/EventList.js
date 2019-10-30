@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Typography, CircularProgress } from '@material-ui/core';
+import {
+  Typography,
+  CircularProgress,
+  Button,
+  Menu,
+  MenuItem
+} from '@material-ui/core';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import moment from 'moment';
 import 'moment/locale/fi';
 import { get } from 'lodash';
@@ -11,6 +18,8 @@ import { useEventListStyles } from '../../styles/styles';
 
 function EventList({ token }) {
   const [events, setEvents] = useState(null);
+  const [filter, setFilter] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
   const classes = useEventListStyles();
 
   useEffect(() => {
@@ -22,17 +31,57 @@ function EventList({ token }) {
     }
   }, [token]);
 
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = value => {
+    setAnchorEl(null);
+    setFilter(value);
+  };
+
   if (!events) {
     return <CircularProgress />;
   }
+
+  const locations = [...new Set(events.map(({ location }) => location.name))];
+  const eventsToShow = events.filter(({ location }) =>
+    location.name.includes(filter)
+  );
 
   return (
     <div>
       <Typography variant="h2" className={classes.title}>
         Tapahtumat
       </Typography>
+      <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
+        <Typography style={{ marginRight: 16 }}>Valitse sijainti:</Typography>
+        <Button
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          variant="outlined"
+          onClick={handleClick}
+        >
+          {filter.length === 0 ? 'Näytä Kaikki' : filter}
+          <ArrowDropDownIcon style={{ marginLeft: '16px' }} />
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          <MenuItem onClick={() => handleClose('')}>Näytä kaikki</MenuItem>
+          {locations.map((location, i) => (
+            <MenuItem key={i} onClick={() => handleClose(location)}>
+              {location}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
       <div className={classes.eventWrapper}>
-        {events.map(event => (
+        {eventsToShow.map(event => (
           <EventItem
             key={event.id}
             id={event.id}

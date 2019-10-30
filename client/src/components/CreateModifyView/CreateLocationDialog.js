@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@material-ui/core';
-import { Dialog, DialogTitle } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  DialogContent,
+  Dialog,
+  DialogTitle,
+  IconButton
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 import locationServices from '../../services/locations';
+import { useCreateLocationDialogStyles } from '../../styles/styles';
 
 function CreateLocationDialog({ onClose, open, token }) {
   const [name, setName] = useState('');
@@ -11,6 +19,7 @@ function CreateLocationDialog({ onClose, open, token }) {
   const [city, setCity] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
   const [webUrl, setWebUrl] = useState('');
+  const classes = useCreateLocationDialogStyles();
 
   const handleSubmit = () => {
     locationServices
@@ -35,12 +44,21 @@ function CreateLocationDialog({ onClose, open, token }) {
 
   return (
     <Dialog
-      onClose={() => onClose()}
+      onClose={() => onClose('')}
       aria-labelledby="create.location-dialog"
       open={open}
     >
-      <DialogTitle>Lisää uusi siajinti</DialogTitle>
-      <div style={{ padding: 16 }}>
+      <DialogTitle>
+        Lisää uusi siajinti
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={() => onClose('')}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent style={{ padding: 16 }}>
         <TextField
           autoFocus
           id="locationName"
@@ -113,7 +131,7 @@ function CreateLocationDialog({ onClose, open, token }) {
         >
           Luo Sijainti
         </Button>
-      </div>
+      </DialogContent>
     </Dialog>
   );
 }

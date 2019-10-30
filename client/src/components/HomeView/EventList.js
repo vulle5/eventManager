@@ -15,10 +15,12 @@ import { get } from 'lodash';
 import eventServices from '../../services/events';
 import EventItem from './EventItem';
 import { useEventListStyles } from '../../styles/styles';
+import { DatePicker } from '@material-ui/pickers';
 
 function EventList({ token }) {
   const [events, setEvents] = useState(null);
-  const [filter, setFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState(moment());
   const [anchorEl, setAnchorEl] = useState(null);
   const classes = useEventListStyles();
 
@@ -37,7 +39,7 @@ function EventList({ token }) {
 
   const handleClose = value => {
     setAnchorEl(null);
-    setFilter(value);
+    setLocationFilter(value);
   };
 
   if (!events) {
@@ -45,9 +47,11 @@ function EventList({ token }) {
   }
 
   const locations = [...new Set(events.map(({ location }) => location.name))];
-  const eventsToShow = events.filter(({ location }) =>
-    location.name.includes(filter)
-  );
+  const eventsToShow = events
+    .filter(({ location }) => location.name.includes(locationFilter))
+    .filter(({ startDate }) =>
+      moment(startDate).isAfter(dateFilter.startOf('day'))
+    );
 
   return (
     <div>
@@ -60,9 +64,10 @@ function EventList({ token }) {
           aria-controls="simple-menu"
           aria-haspopup="true"
           variant="outlined"
+          style={{ marginRight: 16 }}
           onClick={handleClick}
         >
-          {filter.length === 0 ? 'Näytä Kaikki' : filter}
+          {locationFilter.length === 0 ? 'Näytä Kaikki' : locationFilter}
           <ArrowDropDownIcon style={{ marginLeft: '16px' }} />
         </Button>
         <Menu
@@ -79,6 +84,13 @@ function EventList({ token }) {
             </MenuItem>
           ))}
         </Menu>
+        <Typography style={{ marginRight: 16 }}>Valitse Päivämäärä:</Typography>
+        <DatePicker
+          label=""
+          value={dateFilter}
+          onChange={setDateFilter}
+          format="DD/MM/YYYY"
+        />
       </div>
       <div className={classes.eventWrapper}>
         {eventsToShow.map(event => (

@@ -56,9 +56,6 @@ function EventItem({
         >
           Tarkemmat Tiedot
         </Button>
-        <Button size="small" color="primary">
-          Tykkää
-        </Button>
       </CardActions>
     </Card>
   );

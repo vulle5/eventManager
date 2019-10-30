@@ -21,4 +21,11 @@ const createLocation = async (token, location) => {
   return response.data;
 };
 
-export default { getLocations, createLocation };
+const deleteLocation = async (token, locationId) => {
+  const config = createConfig(token);
+
+  const response = await axios.delete(`${baseUrl}/${locationId}`, config);
+  return response.data;
+};
+
+export default { getLocations, createLocation, deleteLocation };

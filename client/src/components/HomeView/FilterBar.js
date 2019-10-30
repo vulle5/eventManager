@@ -23,7 +23,14 @@ function FilterBar({
   };
 
   return (
-    <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center' }}>
+    <div
+      style={{
+        marginBottom: 16,
+        display: 'flex',
+        alignItems: 'center',
+        flexWrap: 'wrap'
+      }}
+    >
       <Typography style={{ marginRight: 16 }}>Valitse sijainti:</Typography>
       <Button
         aria-controls="simple-menu"

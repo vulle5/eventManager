@@ -10,6 +10,7 @@ import Home from './HomeView/Home';
 import HeaderBar from './HeaderBar';
 import EventView from './EventView/EventView';
 import CreateModifyView from './CreateModifyView/CreateModifyView';
+import LocationsView from './LocationsView/LocationsView';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <HeaderBar />
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute path="/locations" component={LocationsView} />
             <PrivateRoute path="/event/:id" component={EventView} />
             <PrivateRoute path="/createEvent" component={CreateModifyView} />
             <PrivateRoute

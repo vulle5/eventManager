@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const locationSchema = new Schema({
-  name: String,
+  name: { type: String, default: '' },
   address: { type: String, required: true },
   areaCode: { type: String, required: true },
   city: { type: String, required: true },
-  phoneNum: String,
-  webUrl: String,
+  phoneNum: { type: String, default: '' },
+  webUrl: { type: String, default: '' },
   events: [
     {
       type: mongoose.Schema.Types.ObjectId,

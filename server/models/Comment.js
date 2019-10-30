@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const commentSchema = new Schema({
-  comment: { type: String, maxlength: 200 },
+  comment: { type: String, maxlength: 200, default: '' },
   likes: { type: Number, default: 0 },
   event: {
     type: mongoose.Schema.Types.ObjectId,

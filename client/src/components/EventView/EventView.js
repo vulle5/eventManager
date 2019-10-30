@@ -97,17 +97,11 @@ function EventView({ match: { params }, token }) {
         <Typography variant="h5" style={{ marginBottom: 16 }}>
           Tiedot
         </Typography>
-        <Typography variant="subtitle1">{`puh: ${get(
-          event.location,
-          'phoneNum',
-          ''
-        )}`}</Typography>
+        <Typography variant="subtitle1">{`puh: ${event.location.phoneNum}`}</Typography>
         <Typography variant="subtitle1">
-          <a href={`http://${get(event.location, 'webUrl', '')}`}>{`web: ${get(
-            event.location,
-            'webUrl',
-            ''
-          )}`}</a>
+          <a
+            href={`http://${event.location.webUrl}`}
+          >{`web: ${event.location.webUrl}`}</a>
         </Typography>
       </Paper>
     </div>

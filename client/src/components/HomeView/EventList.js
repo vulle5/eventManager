@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { Typography, CircularProgress } from '@material-ui/core';
-import moment from 'moment';
-import 'moment/locale/fi';
-import { get } from 'lodash';
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { Typography, CircularProgress } from "@material-ui/core";
+import moment from "moment";
+import "moment/locale/fi";
+import { get } from "lodash";
 
-import eventServices from '../../services/events';
-import EventItem from './EventItem';
-import { useEventListStyles } from '../../styles/styles';
-import FilterBar from './FilterBar';
+import eventServices from "../../services/events";
+import EventItem from "./EventItem";
+import { useEventListStyles } from "../../styles/styles";
+import FilterBar from "./FilterBar";
 
 function EventList({ token }) {
   const [events, setEvents] = useState(null);
-  const [locationFilter, setLocationFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState("");
   const [dateFilter, setDateFilter] = useState(moment());
   const classes = useEventListStyles();
 
@@ -26,14 +26,18 @@ function EventList({ token }) {
   }, [token]);
 
   if (!events) {
-    return <CircularProgress />;
+    return (
+      <div style={{ marginTop: 16, width: "100%", textAlign: "center" }}>
+        <CircularProgress />
+      </div>
+    );
   }
 
   const locations = [...new Set(events.map(({ location }) => location.name))];
   const eventsToShow = events
     .filter(({ location }) => location.name.includes(locationFilter))
     .filter(({ startDate }) =>
-      moment(startDate).isAfter(dateFilter.startOf('day'))
+      moment(startDate).isAfter(dateFilter.startOf("day"))
     );
 
   return (
@@ -57,8 +61,8 @@ function EventList({ token }) {
             description={event.description}
             organizer={event.organizer}
             startDate={moment(event.startDate)
-              .locale('fi')
-              .format('DD.MMM YYYY, HH:mm')}
+              .locale("fi")
+              .format("DD.MMM YYYY, HH:mm")}
           />
         ))}
       </div>
@@ -68,7 +72,7 @@ function EventList({ token }) {
 
 const mapStateToProps = state => {
   return {
-    token: get(state, 'user.token', null)
+    token: get(state, "user.token", null)
   };
 };
 

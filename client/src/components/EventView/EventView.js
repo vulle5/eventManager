@@ -45,7 +45,11 @@ function EventView({ match: { params }, token, username }) {
   };
 
   if (!event) {
-    return <CircularProgress />;
+    return (
+      <div style={{ marginTop: 16, width: '100%', textAlign: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (
@@ -61,7 +65,7 @@ function EventView({ match: { params }, token, username }) {
             onClick={() =>
               history.push(
                 `/modifyEvent/${event.id}?name=${event.name}&locationId=${event.location.id}` +
-                  `&eventId=${event.id}&startDate=${event.startDate}&endDate=${event.endDate}&description=${event.description}`
+                `&eventId=${event.id}&startDate=${event.startDate}&endDate=${event.endDate}&description=${event.description}`
               )
             }
           />

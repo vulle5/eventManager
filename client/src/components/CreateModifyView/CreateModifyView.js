@@ -16,6 +16,7 @@ import { get } from 'lodash';
 
 import locationServices from '../../services/locations';
 import eventServices from '../../services/events';
+import CreateLocationDialog from './CreateLocationDialog';
 
 function CreateModifyView({ token }) {
   const [name, setName] = useState('');
@@ -24,9 +25,18 @@ function CreateModifyView({ token }) {
   const [locationId, setLocationId] = useState('');
   const [description, setDescription] = useState('');
   const [locations, setLocations] = useState(null);
+  const [open, setOpen] = useState(false);
   const history = useHistory();
 
-  // TODO: Add location creation
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = value => {
+    setOpen(false);
+    setLocationId(value);
+  };
+
   useEffect(() => {
     if (token) {
       locationServices
@@ -34,7 +44,7 @@ function CreateModifyView({ token }) {
         .then(locations => setLocations(locations))
         .catch(err => console.log(err));
     }
-  }, [token]);
+  }, [token, locationId]);
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -112,7 +122,14 @@ function CreateModifyView({ token }) {
               </MenuItem>
             )}
           </TextField>
-          <Button color="primary">Luo Sijainti</Button>
+          <Button color="primary" onClick={handleClickOpen}>
+            Luo Sijainti
+          </Button>
+          <CreateLocationDialog
+            open={open}
+            onClose={handleClose}
+            token={token}
+          />
           <DateTimePicker
             style={{ marginTop: 16, marginBottom: 8 }}
             id="startDate"

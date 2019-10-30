@@ -14,4 +14,11 @@ const getLocations = async token => {
   return response.data;
 };
 
-export default { getLocations };
+const createLocation = async (token, location) => {
+  const config = createConfig(token);
+
+  const response = await axios.post(baseUrl, location, config);
+  return response.data;
+};
+
+export default { getLocations, createLocation };

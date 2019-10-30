@@ -3,7 +3,7 @@ const Location = require('../models/Location');
 const User = require('../models/User');
 
 locationRoutes.get('', async (req, res) => {
-  const locations = await Location.find({})
+  const locations = await Location.where({ user: req.user.id })
     .populate('events', {
       name: 1,
       startDate: 1,

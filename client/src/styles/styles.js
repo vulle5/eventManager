@@ -16,6 +16,7 @@ export const useEventListStyles = makeStyles(theme => ({
   title: { fontWeight: 'bold', margin: '16px 0px' },
   eventWrapper: {
     display: 'flex',
+    alignItems: 'flex-start',
     flexWrap: 'wrap'
   }
 }));

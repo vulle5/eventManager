@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Paper, CircularProgress } from '@material-ui/core';
 import { get } from 'lodash';
@@ -8,10 +9,12 @@ import participationServices from '../../services/participations';
 import ParticipantsList from './ParticipantsList';
 import ParticipationButtons from './ParticipationButtons';
 import EventInfo from './EventInfo';
+import FAB from '../FAB';
 
 function EventView({ match: { params }, token, username }) {
   const [event, setEvent] = useState(null);
   const [didUpdate, setDidUpdate] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     if (token) {
@@ -50,6 +53,16 @@ function EventView({ match: { params }, token, username }) {
         <EventInfo event={event} />
         <ParticipantsList event={event} />
         <ParticipationButtons event={event} onPartaking={onPartaking} />
+        {event.organizer.username === username && (
+          <FAB
+            title="Muokkaa"
+            onClick={() =>
+              history.push(
+                `/modifyEvent/${event.id}?name=${event.name}&locationId=${event.location.id}&eventId=${event.id}&startDate=${event.startDate}&endDate=${event.endDate}&description=${event.description}`
+              )
+            }
+          />
+        )}
       </Paper>
     </div>
   );

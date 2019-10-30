@@ -13,18 +13,20 @@ import {
 import moment from 'moment';
 import { DateTimePicker } from '@material-ui/pickers';
 import { get } from 'lodash';
+import qs from 'qs';
 
 import locationServices from '../../services/locations';
 import eventServices from '../../services/events';
 import CreateLocationDialog from './CreateLocationDialog';
 
-function CreateModifyView({ token }) {
+function CreateModifyView({ token, location: { search } }) {
   const [name, setName] = useState('');
   const [startDate, setStartDate] = useState(moment().add(1, 'hour'));
   const [endDate, setEndDate] = useState(moment().add(2, 'hours'));
   const [locationId, setLocationId] = useState('');
   const [description, setDescription] = useState('');
   const [locations, setLocations] = useState(null);
+  const [eventId, setEventId] = useState(null);
   const [open, setOpen] = useState(false);
   const history = useHistory();
 
@@ -46,13 +48,53 @@ function CreateModifyView({ token }) {
     }
   }, [token, locationId]);
 
+  useEffect(() => {
+    if (search.length) {
+      const {
+        name,
+        startDate,
+        endDate,
+        description,
+        locationId,
+        eventId
+      } = qs.parse(search.substring(1));
+      setName(name);
+      setLocationId(locationId);
+      setStartDate(moment(startDate));
+      setEndDate(moment(endDate));
+      setDescription(description);
+      setEventId(eventId);
+    }
+  }, [search]);
+
   const handleSubmit = event => {
     event.preventDefault();
 
-    eventServices
-      .createEvent(token, { name, startDate, endDate, description, locationId })
-      .then(_ => history.replace('/'))
-      .catch(err => console.log(err));
+    if (search) {
+      console.log('hello');
+      console.log(eventId);
+      eventServices
+        .updateEvent(token, eventId, {
+          name,
+          startDate,
+          endDate,
+          description,
+          locationId
+        })
+        .then(_ => history.replace('/'))
+        .catch(err => console.log(err));
+    } else {
+      eventServices
+        .createEvent(token, {
+          name,
+          startDate,
+          endDate,
+          description,
+          locationId
+        })
+        .then(_ => history.replace('/'))
+        .catch(err => console.log(err));
+    }
   };
 
   const validateFields = () => {
@@ -83,7 +125,7 @@ function CreateModifyView({ token }) {
         }}
       >
         <Typography style={{ margin: '8px 0px' }} variant="h5">
-          Lisää uusi tapahtuma
+          {search ? 'Muokkaa tapahtumaa' : 'Lisää uusi tapahtuma'}
         </Typography>
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField
@@ -186,7 +228,7 @@ function CreateModifyView({ token }) {
             type="submit"
             style={{ margin: '8px 0px' }}
           >
-            Luo Tapahtuma
+            {search ? 'Muokkaa tapahtumaa' : 'Luo Tapahtuma'}
           </Button>
         </form>
       </Paper>

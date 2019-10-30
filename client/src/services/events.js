@@ -28,4 +28,11 @@ const createEvent = async (token, event) => {
   return response.data;
 };
 
-export default { getEvents, getEventWithId, createEvent };
+const updateEvent = async (token, eventId, event) => {
+  const config = createConfig(token);
+
+  const response = await axios.put(`${baseUrl}/${eventId}`, event, config);
+  return response.data;
+};
+
+export default { getEvents, getEventWithId, createEvent, updateEvent };

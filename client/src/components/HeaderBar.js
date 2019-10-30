@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   AppBar,
@@ -10,9 +11,11 @@ import {
   ListItemAvatar,
   Avatar
 } from '@material-ui/core';
+import { get } from 'lodash';
+
 import { useHeaderBarStyles } from '../styles/styles';
 
-function HeaderBar() {
+function HeaderBar({ usersName }) {
   const classes = useHeaderBarStyles();
   const { pathname } = useLocation();
   const history = useHistory();
@@ -38,9 +41,9 @@ function HeaderBar() {
           </Button>
           <ListItem style={{ maxWidth: 225 }}>
             <ListItemAvatar>
-              <Avatar>S</Avatar>
+              <Avatar>{usersName.substring(0, 1)}</Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Severi Tikkanen" />
+            <ListItemText primary={usersName} />
           </ListItem>
           <Button color="inherit" onClick={handleLogout}>
             Logout
@@ -51,4 +54,10 @@ function HeaderBar() {
   );
 }
 
-export default HeaderBar;
+const mapStateToProps = state => {
+  return {
+    usersName: get(state, 'user.name', '')
+  };
+};
+
+export default connect(mapStateToProps)(HeaderBar);

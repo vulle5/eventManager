@@ -11,9 +11,7 @@ import {
 function ParticipantsList({ event }) {
   return (
     <>
-      <Typography variant="h5" style={{ marginBottom: 16 }}>
-        Osallistujat
-      </Typography>
+      <Typography variant="h5">Osallistujat</Typography>
       <List style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 32 }}>
         {event.participants.filter(({ type }) => type === 'yes').length ? (
           event.participants

@@ -5,13 +5,13 @@ const Event = require('../models/Event');
 
 commentRoutes.get('/:id', async (req, res, next) => {
   try {
-    const comment = await Comment.findById(req.params.id).populate('user', {
-      username: 1,
-      name: 1
+    const { comments } = await Event.findById(req.params.id).populate({
+      path: 'comments',
+      populate: { path: 'user', select: 'name username' }
     });
 
-    if (comment) {
-      res.json(comment.toJSON());
+    if (comments) {
+      res.json(comments);
     } else {
       res.status(404).end();
     }

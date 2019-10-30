@@ -12,6 +12,7 @@ function ParticipationButtons({ event, onPartaking }) {
         variant="contained"
         aria-label="Participation buttons"
         fullWidth
+        style={{ marginBottom: 32 }}
       >
         <Button onClick={() => onPartaking('yes')}>{`Kyllä (${
           event.participants.filter(participant => participant.type === 'yes')

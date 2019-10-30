@@ -10,6 +10,7 @@ import ParticipantsList from './ParticipantsList';
 import ParticipationButtons from './ParticipationButtons';
 import EventInfo from './EventInfo';
 import FAB from '../FAB';
+import CommentsView from './CommentsView';
 
 function EventView({ match: { params }, token, username }) {
   const [event, setEvent] = useState(null);
@@ -51,8 +52,9 @@ function EventView({ match: { params }, token, username }) {
     <div style={{ padding: '16px 0px' }}>
       <Paper style={{ maxWidth: 1000, margin: 'auto', padding: 16 }}>
         <EventInfo event={event} username={username} />
-        <ParticipantsList event={event} />
         <ParticipationButtons event={event} onPartaking={onPartaking} />
+        <ParticipantsList event={event} />
+        <CommentsView event={event} />
         {event.organizer.username === username && (
           <FAB
             title="Muokkaa"

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  CircularProgress,
   ListItem,
   ListItemAvatar,
   Avatar,
   ListItemText,
-  IconButton
+  IconButton,
+  Typography
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 
@@ -32,7 +32,7 @@ function CommentsList({ token, eventId, didUpdate, username }) {
   };
 
   if (!comments.length) {
-    return <CircularProgress />;
+    return <Typography>Ei kommentteja</Typography>;
   }
 
   return (

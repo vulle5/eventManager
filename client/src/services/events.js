@@ -21,6 +21,13 @@ const getEventWithId = async (token, eventId) => {
   return response.data;
 };
 
+const deleteEventWithId = async (token, eventId) => {
+  const config = createConfig(token);
+
+  const response = await axios.delete(`${baseUrl}/${eventId}`, config);
+  return response.data;
+};
+
 const createEvent = async (token, event) => {
   const config = createConfig(token);
 
@@ -35,4 +42,10 @@ const updateEvent = async (token, eventId, event) => {
   return response.data;
 };
 
-export default { getEvents, getEventWithId, createEvent, updateEvent };
+export default {
+  getEvents,
+  getEventWithId,
+  deleteEventWithId,
+  createEvent,
+  updateEvent
+};

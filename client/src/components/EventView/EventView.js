@@ -50,7 +50,7 @@ function EventView({ match: { params }, token, username }) {
   return (
     <div style={{ padding: '16px 0px' }}>
       <Paper style={{ maxWidth: 1000, margin: 'auto', padding: 16 }}>
-        <EventInfo event={event} />
+        <EventInfo event={event} username={username} />
         <ParticipantsList event={event} />
         <ParticipationButtons event={event} onPartaking={onPartaking} />
         {event.organizer.username === username && (

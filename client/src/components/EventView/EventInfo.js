@@ -1,17 +1,31 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   Typography,
   Avatar,
   ListItem,
   ListItemText,
-  ListItemAvatar
+  ListItemAvatar,
+  Button
 } from '@material-ui/core';
 import moment from 'moment';
 import 'moment/locale/fi';
+import { get } from 'lodash';
 
 import placeholder from '../../assets/placeholder.jpg';
+import eventServices from '../../services/events';
 
-function EventInfo({ event }) {
+function EventInfo({ event, token, username }) {
+  const history = useHistory();
+
+  const handleEventDelete = () => {
+    eventServices
+      .deleteEventWithId(token, event.id)
+      .then(_ => history.replace('/'))
+      .catch(err => console.log(err));
+  };
+
   return (
     <>
       <div
@@ -48,12 +62,23 @@ function EventInfo({ event }) {
         alt="Event location"
         style={{ width: '100%', marginTop: 16, marginBottom: 32 }}
       />
-      <ListItem style={{ maxWidth: 200, marginBottom: 32 }} disableGutters>
-        <ListItemAvatar>
-          <Avatar>{event.organizer.name.substring(0, 1)}</Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={event.organizer.name} />
-      </ListItem>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32 }}>
+        <ListItem style={{ maxWidth: 200 }} disableGutters>
+          <ListItemAvatar>
+            <Avatar>{event.organizer.name.substring(0, 1)}</Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={event.organizer.name} />
+        </ListItem>
+        {event.organizer.username === username && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleEventDelete}
+          >
+            Poista Tapahtuma
+          </Button>
+        )}
+      </div>
       <div style={{ display: 'flex', alignItems: 'baseline' }}>
         <Typography variant="h5" style={{ marginBottom: 32, marginRight: 16 }}>
           Tapahtuma paikka:
@@ -83,4 +108,10 @@ function EventInfo({ event }) {
   );
 }
 
-export default EventInfo;
+const mapStateToProps = state => {
+  return {
+    token: get(state, 'user.token', null)
+  };
+};
+
+export default connect(mapStateToProps)(EventInfo);

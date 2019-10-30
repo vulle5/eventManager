@@ -33,7 +33,16 @@ function HeaderBar({ usersName }) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              if (history.location.pathname !== '/') {
+                history.push('/');
+              }
+            }}
+          >
             Event Manager
           </Typography>
           <Button color="inherit" onClick={() => history.push('/locations')}>

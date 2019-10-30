@@ -79,7 +79,7 @@ function CreateModifyView({ token, location: { search } }) {
           description,
           locationId
         })
-        .then(_ => history.replace('/'))
+        .then(_ => history.replace(`/event/${eventId}`))
         .catch(err => console.log(err));
     } else {
       eventServices

@@ -20,7 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.6",
     "mongoose-unique-validator": "^2.0.3",
-    "qs": "^6.9.0"
+    "qs": "^6.9.7"
   },
   "devDependencies": {
     "concurrently": "^5.0.0",
